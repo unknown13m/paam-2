@@ -1,5 +1,6 @@
 package com.example.paam_lab2
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,30 +16,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 
-
-// TODO 4: All application components must be added to manifest. Make sure to add this one.
 class ComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent { ComposeScreen() }
     }
 
     @Composable
     private fun ComposeScreen() {
-        var text by remember { mutableStateOf(intent.getStringExtra(Intent.EXTRA_TEXT).toString())}
-
+        var text by remember {
+            mutableStateOf(intent.getStringExtra(EXTRA_TEXT) ?: "")
+        }
 
         Surface(color = Color.White) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -49,32 +45,26 @@ class ComposeActivity : ComponentActivity() {
                         .padding(16.dp),
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text(text) }
+                    label = { Text("Enter text") }
                 )
+
                 FloatingActionButton(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(16.dp),
-                    onClick = { onEditClick(text) },
+                    onClick = { onEditClick(text) }
                 ) {
-                    Icon(
-                        Icons.Filled.Check,
-                        "des"
-                    )
+                    Icon(Icons.Filled.Check, contentDescription = "Done")
                 }
             }
         }
     }
 
     private fun onEditClick(text: String) {
-        // Prepare the intent to be returned as result.
         val returnIntent = Intent().apply {
             putExtra(EXTRA_TEXT, text)
         }
-
-        // Mark the result as success and attach text data.
-        setResult(RESULT_OK, returnIntent)
-        // Finish the activity, we do not need it anymore after we got the text input.
+        setResult(Activity.RESULT_OK, returnIntent)
         finish()
     }
 
@@ -87,5 +77,4 @@ class ComposeActivity : ComponentActivity() {
     companion object {
         const val EXTRA_TEXT = "extra_text"
     }
-
 }
